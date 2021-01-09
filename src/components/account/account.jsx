@@ -5,7 +5,7 @@ import UnlockModal from '../unlock/unlockModal.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../assets/css/style2.css';
 import {  Button, Navbar} from 'react-bootstrap';
-import { FaArrowLeft, FaListUl } from "react-icons/fa";
+import {  FaListUl } from "react-icons/fa";
 import {
   ERROR,
   CONNECTION_CONNECTED,
@@ -81,9 +81,8 @@ class Account extends Component {
 
 
   render() {
-    this.state.themeType = store.getStore('themeType')
-    this.state.activeClass = store.getStore('activeClass')
-    const { themeType ,modalOpen} = this.state
+
+    const { modalOpen} = this.state
 
     return (
       <>

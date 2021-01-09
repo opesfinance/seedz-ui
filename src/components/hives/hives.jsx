@@ -9,17 +9,14 @@ import { FaListUl } from "react-icons/fa";
 
 
 import {
-  ERROR,
   CONFIGURE_RETURNED,
-  GET_BALANCES, 
   GET_BALANCES_RETURNED,
-  GET_BOOSTEDBALANCES,
   GET_BOOSTEDBALANCES_RETURNED
 } from '../../constants/constants'
 import LeftNav from "../leftnav/leftnav";
 import Store from "../../stores/store";
 const emitter = Store.emitter
-const dispatcher = Store.dispatcher
+
 const store = Store.store
 
 
@@ -42,8 +39,7 @@ class Hives extends Component {
       themeType : themeType
     };
 
-    /* dispatcher.dispatch({ type: GET_BALANCES, content: {} })
-    dispatcher.dispatch({ type: GET_BOOSTEDBALANCES, content: {} }) */
+
 
   };
 
@@ -158,9 +154,10 @@ class Hives extends Component {
   renderHives=(rewardName)=>{
     const { rewardPools } = this.state
     return rewardPools.filter((rewardPool) => {
-      if([ rewardName] .includes(rewardPool.id) ) {
+      if([rewardName].includes(rewardPool.id) ) {
         return true
       }
+      return false
     }).map((rewardPool) => {
       return (
         <>
@@ -204,7 +201,7 @@ class Hives extends Component {
 
         </>
       )
-    })
+    });
   };
 
 

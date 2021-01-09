@@ -5,7 +5,7 @@ import UnlockModal from '../unlock/unlockModal.jsx'
 
 
 import { Button, Navbar } from 'react-bootstrap';
-import {  FaArrowLeft,FaListUl } from "react-icons/fa";
+import {  FaListUl } from "react-icons/fa";
 
 
 import {

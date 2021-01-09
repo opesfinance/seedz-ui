@@ -6,10 +6,7 @@ import {
   TextField,
   InputAdornment
 } from '@material-ui/core';
-import { withNamespaces } from 'react-i18next';
 
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
 
 import Loader from '../loader'
 import Snackbar from '../snackbar'
@@ -18,15 +15,13 @@ import Store from "../../stores";
 
 
 import '../../assets/css/style2.css';
-import { Container, Col, Row, Button, Navbar, Nav, Card, ListGroup, ListGroupItem } from 'react-bootstrap';
-import {  FaListUl, FaFacebook, FaLink } from "react-icons/fa";
-import Countdown from 'react-countdown-now';
-import Web3 from 'web3';
+import {  Col, Row, Button, Navbar, Card } from 'react-bootstrap';
+import {  FaListUl } from "react-icons/fa";
+
 
 import LeftNav from "../leftnav/leftnav";
 import {
   ERROR,
-  CONFIGURE_RETURNED,
   STAKE,
   STAKE_RETURNED,
   WITHDRAW,
@@ -35,25 +30,11 @@ import {
   GET_REWARDS_RETURNED,
   EXIT,
   EXIT_RETURNED,
-  GET_YCRV_REQUIREMENTS,
-  GET_YCRV_REQUIREMENTS_RETURNED,
-  GET_GOVERNANCE_REQUIREMENTS,
-  GET_GOVERNANCE_REQUIREMENTS_RETURNED,
   GET_BALANCES_RETURNED,
-  GET_BOOSTEDBALANCES,
-  GET_BOOSTEDBALANCES_RETURNED,
   BOOST_STAKE,
-  BOOST_STAKE_RETURNED
 } from '../../constants'
 
-const countdownrenderer = ({ days, hours, minutes, seconds, completed }) => {
-  if (completed) {
-    return <span>Rewards: ENDED</span>;
-  } else {
-    // Render a countdown
-  return <span>Rewards Ends in {days} Day(s) {hours}:{minutes}:{seconds}</span>;
-  }
-};
+
 
 const styles = theme => ({
   
@@ -190,11 +171,9 @@ class Stake extends Component {
     const {
       value,
       account,
-      modalOpen,
       pool,
       loading,
       snackbarMessage,
-      balanceValid
     } = this.state
 
     var address = null;
@@ -280,7 +259,7 @@ class Stake extends Component {
               <br></br>
               Pool Rate: { pool.ratePerWeek ? pool.ratePerWeek.toFixed(4) : "0.0" } { pool.tokens[0].poolRateSymbol }
                 <br/>
-                Contract Address: <a  href={ 'https://etherscan.io/address/'+addy } target="_blank">{ address }</a>.
+                Contract Address: <a  href={ 'https://etherscan.io/address/'+addy } rel="noopener noreferrer" target="_blank">{ address }</a>.
               </p>
           </div>
 
@@ -302,7 +281,7 @@ class Stake extends Component {
                     <td>{ pool.tokens[0].balance ? pool.tokens[0].balance.toFixed(pool.displayDecimal) : "0" }  { pool.tokens[0].symbol }</td>
                     <td>{ pool.tokens[0].stakedBalance ? pool.tokens[0].stakedBalance.toFixed(pool.displayDecimal) : "0" }</td>
                     <td>{ pool.tokens[0].currentActiveBooster ? pool.tokens[0].currentActiveBooster.toFixed(2) : "0" }</td>
-                    <td>{ pool.tokens[0].rewardsSymbol == '$' ? pool.tokens[0].rewardsSymbol : '' } { pool.tokens[0].rewardsAvailable ? pool.tokens[0].rewardsAvailable.toFixed(pool.displayDecimal) : "0" } { pool.tokens[0].rewardsSymbol != '$' ? pool.tokens[0].rewardsSymbol : '' }</td>
+                    <td>{ pool.tokens[0].rewardsSymbol === '$' ? pool.tokens[0].rewardsSymbol : '' } { pool.tokens[0].rewardsAvailable ? pool.tokens[0].rewardsAvailable.toFixed(pool.displayDecimal) : "0" } { pool.tokens[0].rewardsSymbol !== '$' ? pool.tokens[0].rewardsSymbol : '' }</td>
                   </tr>
                 </tbody>
             </table>
@@ -324,7 +303,7 @@ class Stake extends Component {
 
 
   stakeMain= ()=>{
-    const { pool, stakevalue } = this.state;
+    const { pool } = this.state;
 
     return (
       <Row>
@@ -401,11 +380,8 @@ class Stake extends Component {
 
 
   renderBuyBoost = () => {
-    const { classes } = this.props;
-    const { loading, pool, voteLockValid } = this.state
 
-    const asset = pool.tokens[0]
-
+    const { pool } = this.state
 
     return (
 
@@ -434,7 +410,7 @@ class Stake extends Component {
                     <td>{ pool.tokens[0].boostBalance ? pool.tokens[0].boostBalance.toFixed(pool.displayDecimal) : "0" } ETH </td>
                     <td>{ pool.tokens[0].stakedBalance ? pool.tokens[0].stakedBalance.toFixed(pool.displayDecimal) : "0" }</td>
                     <td>{ pool.tokens[0].currentActiveBooster ? pool.tokens[0].currentActiveBooster.toFixed(2) : "0" }</td>
-                    <td>{ pool.tokens[0].rewardsSymbol == '$' ? pool.tokens[0].rewardsSymbol : '' } { pool.tokens[0].rewardsAvailable ? pool.tokens[0].rewardsAvailable.toFixed(pool.displayDecimal) : "0" } { pool.tokens[0].rewardsSymbol != '$' ? pool.tokens[0].rewardsSymbol : '' }</td>
+                    <td>{ pool.tokens[0].rewardsSymbol === '$' ? pool.tokens[0].rewardsSymbol : '' } { pool.tokens[0].rewardsAvailable ? pool.tokens[0].rewardsAvailable.toFixed(pool.displayDecimal) : "0" } { pool.tokens[0].rewardsSymbol !== '$' ? pool.tokens[0].rewardsSymbol : '' }</td>
                   </tr>
                 </tbody>
             </table>
@@ -444,13 +420,12 @@ class Stake extends Component {
          
           <table className="table">
              <tbody>
-               {
-                 pool.id == "seedzindex" || pool.id == "seedzuni" &&
+               
                  <tr>
                  <td className="text-left">Ethereum Price (USD)</td>
                  <td className="text-right">$ { pool.tokens[0].ethPrice ? pool.tokens[0].ethPrice.toFixed(2) : "0.00" }</td>
                </tr>
-               }
+               
                <tr>
                  <td className="text-left">Token Balance</td>
                  <td className="text-right">{ pool.tokens[0].boostBalance ? pool.tokens[0].boostBalance.toFixed(7) : "0" } ETH</td>
@@ -497,7 +472,7 @@ class Stake extends Component {
 
   
   validateBoost = () => {
-    const { loading, pool, voteLockValid } = this.state
+    const { pool } = this.state
     if(pool.tokens[0].costBooster > pool.tokens[0].boostBalance){
         emitter.emit(ERROR, 'insufficient funds to activate Beast Mode');
     } else if((pool.tokens[0].timeToNextBoost -(new Date().getTime())/1000) > 0){
@@ -613,8 +588,8 @@ class Stake extends Component {
           <TextField
             fullWidth
             disabled={ loading }
-            className={ (amountStakeError && fieldid ==  asset.id + '_' + type ? 'border-btn-error mb-1' : 'border-btn mb-1') }
-            inputRef={ input =>input && fieldid ==  asset.id + '_' + type && amountStakeError && input.focus()}
+            className={ (amountStakeError && fieldid ===  asset.id + '_' + type ? 'border-btn-error mb-1' : 'border-btn mb-1') }
+            inputRef={ input =>input && fieldid ===  asset.id + '_' + type && amountStakeError && input.focus()}
             id={ '' + asset.id + '_' + type }
             value={ amount }
             error={ amountError }

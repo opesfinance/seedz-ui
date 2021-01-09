@@ -5,7 +5,7 @@ import UnlockModal from '../unlock/unlockModal.jsx'
 
 
 import { Button, Navbar} from 'react-bootstrap';
-import { FaListUl, FaArrowLeft, FaTwitter, FaGithubAlt, FaFacebook, FaLink } from "react-icons/fa";
+import { FaListUl, FaTwitter, FaGithubAlt, FaFacebook, FaLink } from "react-icons/fa";
 
 
 import {
@@ -132,9 +132,10 @@ class Farm extends Component {
   renderFarmItem=(rewardName)=>{
     const { rewardPools } = this.state
     return rewardPools.filter((rewardPool) => {
-      if([ rewardName] .includes(rewardPool.id) ) {
+      if([ rewardName].includes(rewardPool.id) ) {
         return true
       }
+      return false
     }).map((rewardPool) => {
       return (
         <>
