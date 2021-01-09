@@ -14,7 +14,6 @@ import {
   useWeb3React,
 } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import { useEagerConnect, useInactiveListener } from "./hooks";
 
 import {
   ERROR,

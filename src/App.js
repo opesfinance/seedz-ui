@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+
 import {
   Switch,
   Route
@@ -8,13 +7,14 @@ import {
 import IpfsRouter from 'ipfs-react-router'
 
 import './i18n';
-import interestTheme from './theme';
+
 
 import Account from './components/account';
 import Home from './components/home';
 import Farm from './components/farm';
-import Stores from './components/stores';
+import Hives from './components/hives';
 import WhaleTank from './components/whalestank';
+import Stake from './components/stake'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/css/style2.css';
@@ -38,7 +38,8 @@ const store = Store.store
 class App extends Component {
   state = {
     account: null,
-    headerValue: null
+    headerValue: null,
+    themeType : false
   };
   
   setHeaderValue = (newValue) => {
@@ -99,33 +100,31 @@ class App extends Component {
     const {  account } = this.state
 
     return (
-      <MuiThemeProvider theme={ createMuiTheme(interestTheme) }>
-      
-        <CssBaseline />
-        <IpfsRouter>
-          { !account && <Account /> }
-          { account  &&
-           
-           
+     <>
+        <IpfsRouter>        
               <Switch>
+              <Route path="/stake">
+                  <Stake/>
+               </Route>
                 <Route path="/whaletank">
                   <WhaleTank/>
                </Route>
-                <Route path="/stores">
-                  <Stores/>
+                <Route path="/hives">
+                  <Hives/>
                </Route>
                 <Route path="/farm">
                   <Farm/>
                </Route>
                 <Route path="/">
-                  <Home />
+                { !account && <Account /> }
+                  { account && <Home /> }
                 </Route>
                 
               </Switch>
             
-          }
+          
         </IpfsRouter>
-      </MuiThemeProvider>
+      </>
     );
   }
 }

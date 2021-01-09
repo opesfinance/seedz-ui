@@ -9,7 +9,7 @@ import {
 
 import { colors } from "../../theme";
 import { withNamespaces } from 'react-i18next';
-import '../../assets/css/style.css';
+import '../../assets/css/style2.css';
 
 const iconStyle = {
   fontSize: '22px',

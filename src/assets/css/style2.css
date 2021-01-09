@@ -1,9 +1,10 @@
 
-/* 
+
 body {
-   background:linear-gradient(to right, #162643ff 5%, #212328ff 90%);
+   /* background:linear-gradient(to right, #162643ff 5%, #212328ff 90%); */
+   font-family: Poppins, Poppins-Bold;
 }
- */
+
 .MuiDialogContent-root{
    background-color: #4a5e72 !important;
    border:1px solid #186ce9;
@@ -228,7 +229,45 @@ Body Template
    border:0px !important;
 }
 
+@media only screen and (max-width: 800px) {
+   .whaleTankImg{
+      margin-top:30px !important;
+      height:200px !important;
+   }
+}
 
+.newBorder{
+   border:solid 1px #4d6389;
+   background-color: transparent !important;
+   border-top-left-radius: 10px !important;
+   border-top-right-radius: 10px !important;
+   border-bottom-left-radius: 10px !important;
+   border-bottom-right-radius: 10px !important;
+}
+
+.newBorder table tbody tr th{
+   color:#3874de;
+   font-size:15px;
+}
+
+.newBorder table tbody tr td{
+   font-size:13px;
+}
+
+.newBorder table tbody tr th,
+.newBorder table tbody tr td{
+   padding:3px;
+   border-bottom:solid 1px #4d6389;
+}
+
+.newBorder table tbody tr:last-child th,
+.newBorder table tbody tr:last-child td{
+   border-bottom:0px !important;
+}
+
+.newTable tr{
+   border:solid 1px #3874de; 
+}
 
 /*
 ------------------------

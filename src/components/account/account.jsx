@@ -1,21 +1,15 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import {
-  Divider,
-  Typography,
-} from '@material-ui/core';
-
 
 import UnlockModal from '../unlock/unlockModal.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../assets/css/style2.css';
-import { Container, Col, Row, Button, Navbar, Nav, Card, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { FaRegListAlt, FaArrowLeft, FaListUl } from "react-icons/fa";
+import {  Button, Navbar} from 'react-bootstrap';
+import { FaArrowLeft, FaListUl } from "react-icons/fa";
 import {
   ERROR,
   CONNECTION_CONNECTED,
   CONNECTION_DISCONNECTED,
-  CONFIGURE,
   CONFIGURE_RETURNED
 } from '../../constants'
 
@@ -23,7 +17,6 @@ import Store from "../../stores";
 import LeftNav from "../leftnav/leftnav";
 
 const emitter = Store.emitter
-const dispatcher = Store.dispatcher
 const store = Store.store
 
 
@@ -35,9 +28,10 @@ class Account extends Component {
 
     const account = store.getStore('account')
     const themeType = store.getStore('themeType')
+    const activeClass = store.getStore('activeClass')
 
     this.state = {
-      activeClass : false,
+      activeClass : activeClass,
       loading: false,
       account: account,
       assets: store.getStore('assets'),
@@ -75,68 +69,40 @@ class Account extends Component {
     //TODO: handle errors
   };
 
-  toggleClass=()=> {
-    const { activeClass } = this.state
-    this.setState({ activeClass: !activeClass });
+  toggleClass=(activeClassVal)=> {
+    this.setState({ activeClass: !store.getStore('activeClass') });
+    store.setStore({activeClass : !store.getStore('activeClass')})
   };
-
-  toggleTheme = ()=>{
-    const themeType = store.getStore('themeType');
-    store.setStore({'themeType': !themeType});
-    this.setState({'themeType' : !themeType});
-    console.log("THEME Account : ", !themeType)
-    
+  toggleTheme=(themeTypeVal)=> {
+    this.setState({themeType : themeTypeVal});
   }
   
  
 
 
   render() {
-    const { classes } = this.props
-    const { activeClass, loading , themeType,modalOpen, account} = this.state
+    this.state.themeType = store.getStore('themeType')
+    this.state.activeClass = store.getStore('activeClass')
+    const { themeType ,modalOpen} = this.state
 
     return (
       <>
 
 
-        <div className={!activeClass?"d-flex":"d-flex toggled"} id="wrapper">
+        <div className={!this.state.activeClass?"d-flex":"d-flex toggled"} id="wrapper">
 
-          <div className={!themeType?"nigthmode-sidebar":"daymode-sidebar"} id="sidebar-wrapper">
-            
-            <LeftNav  props={this.props} themeType={themeType} />
-
-            <div className={!themeType?"nigthmode-sidebar-text nav-footer d-flex align-items-end":"daymode-sidebar-text nav-footer d-flex align-items-end"} >
-              <Button className="btn-block btnClear" 
-               onClick={this.toggleClass}>
-                <FaArrowLeft/> Hide Menu
-              </Button>
-              <br/>
-             
-             
-              
-            </div>
-
-            <div className="onoffswitch1 text-center">
-              <input type="checkbox" name="onoffswitch1" className="onoffswitch1-checkbox" id="myonoffswitch1"
-              onClick={this.toggleTheme}  
-              checked={themeType} />
-              <label className="onoffswitch1-label" htmlFor="myonoffswitch1">
-                  <span className="onoffswitch1-inner"></span>
-                  <span className="onoffswitch1-switch"></span>
-              </label>
-            </div>
+        <LeftNav 
+              toggleClass={this.toggleClass.bind(this)}
+              toggleTheme={this.toggleTheme.bind(this)}
+            />
 
 
 
-          </div>
-
-
-
-          <div  className={!themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
+          <div  className={!this.state.themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
 
             <Navbar className="mt-3">
               <Button className="btn btn-primary" data-toggle="collapse" aria-expanded="false"
-                onClick={this.toggleClass}
+                onClick={this.toggleClass.bind(this)}
                 ><FaListUl/></Button>
 
               <Navbar.Toggle />

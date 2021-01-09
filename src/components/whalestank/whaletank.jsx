@@ -4,20 +4,16 @@ import { withNamespaces } from 'react-i18next';
 import UnlockModal from '../unlock/unlockModal.jsx'
 
 
-import { Container, Col, Row, Button, Navbar, Nav, Card, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { FaRegListAlt, FaArrowLeft,FaListUl } from "react-icons/fa";
+import { Button, Navbar } from 'react-bootstrap';
+import {  FaArrowLeft,FaListUl } from "react-icons/fa";
 
 
 import {
-  ERROR,
   CONFIGURE_RETURNED,
-  GET_BALANCES, 
-  GET_BALANCES_RETURNED
 } from '../../constants'
 import LeftNav from "../leftnav/leftnav";
 import Store from "../../stores";
 const emitter = Store.emitter
-const dispatcher = Store.dispatcher
 const store = Store.store
 
 
@@ -27,10 +23,11 @@ class WhaleTank extends Component {
     super()
 
     const account = store.getStore('account')
-    const themeType = store.getStore('themeType')
+    const themeType = store.getStore("themeType") 
+    const activeClass = store.getStore("activeClass")
 
     this.state = {
-      activeClass: false,
+      activeClass: activeClass,
       account: account,
       themeType : themeType
     };
@@ -48,15 +45,13 @@ class WhaleTank extends Component {
     this.setState({ loading: false })
   }
 
-  toggleClass=()=> {
-    const { activeClass } = this.state
-    this.setState({ activeClass: !activeClass });
+ 
+  toggleClass=(activeClassVal)=> {
+    this.setState({ activeClass: !store.getStore('activeClass') });
+    store.setStore({activeClass : !store.getStore('activeClass')})
   };
-
-  toggleTheme = ()=>{
-    const themeType = store.getStore('themeType');
-    store.setStore({'themeType': !themeType});
-    this.setState({'themeType' : !themeType});
+  toggleTheme=(themeTypeVal)=> {
+    this.setState({themeType : themeTypeVal});
   }
   
   
@@ -64,11 +59,9 @@ class WhaleTank extends Component {
   
 
   render() {
-    const { classes, t, location } = this.props;
-    const themeType = store.getStore('themeType')
-    console.log("THEME HOME : ", themeType)
-    const { activeClass, account, modalOpen } = this.state;
-
+    this.state.themeType = store.getStore('themeType')
+    this.state.activeClass = store.getStore('activeClass')
+    const {  account, modalOpen } = this.state;
     var address = null;
     if (account.address) {
       address = account.address.substring(0,6)+'...'+account.address.substring(account.address.length-4,account.address.length)
@@ -78,46 +71,21 @@ class WhaleTank extends Component {
     return (
       <>
 
-        <div className={!activeClass?"d-flex":"d-flex toggled"} id="wrapper">
+        <div className={!this.state.activeClass?"d-flex":"d-flex toggled"} id="wrapper">
 
-            <div className={!themeType?"nigthmode-sidebar":"daymode-sidebar"} id="sidebar-wrapper">
-              
-            <LeftNav  props={this.props} themeType={themeType}/>
-
-
-              <div className={!themeType?"nigthmode-sidebar-text nav-footer d-flex align-items-end":"daymode-sidebar-text nav-footer d-flex align-items-end"} >
-                <Button className="btn-block btnClear" 
-                onClick={this.toggleClass}>
-                  <FaArrowLeft/> Hide Menu
-                </Button>
-                <br/>
-              
-              
-                
-              </div>
-
-              <div className="onoffswitch1 text-center">
-                <input type="checkbox" name="onoffswitch1" className="onoffswitch1-checkbox" id="myonoffswitch1"
-                onClick={this.toggleTheme}  
-                checked={themeType}/>
-                <label className="onoffswitch1-label" htmlFor="myonoffswitch1">
-                    <span className="onoffswitch1-inner"></span>
-                    <span className="onoffswitch1-switch"></span>
-                </label>
-              </div>
+            
+          <LeftNav 
+            toggleClass={this.toggleClass.bind(this)}
+            toggleTheme={this.toggleTheme.bind(this)}
+            />
 
 
-
-            </div>
-
-
-
-            <div  className={!themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
+            <div  className={!this.state.themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
 
               <Navbar className="mt-3">
               <Navbar.Toggle />
                { <Button className="btn btn-primary" data-toggle="collapse" aria-expanded="false"
-                  onClick={this.toggleClass}
+                  onClick={this.toggleClass.bind(this)}
                   ><FaListUl/></Button> }
 
                
@@ -125,19 +93,31 @@ class WhaleTank extends Component {
                 
                 <Navbar.Collapse className="justify-content-end">
                   <Button className="btn btn-primary" onClick={this.overlayClicked }>
-                  Wallet :  { address}
+                    { address && 'Wallet : ' + address}
+                    { !address && 'Connect Wallet'}
                   </Button>
                 </Navbar.Collapse>
               </Navbar>
 
               <div className="container-fluid">
-            
-            
               
-              
-              <h1>Whale Tank PAGE</h1>
-              
-              
+                <h1>Whale Tank</h1>
+                
+                <div className="row">
+                  <div className="col-lg-3 col-md-12 col-sm-12"></div>
+                  <div className="col-lg-6 col-md-12 col-sm-12 text-center mx-auto my-auto">
+                    <img alt="" 
+                    className="whaleTankImg"
+                    src={require("../../assets/WhaleTank.png")} height="300" />
+                    <h4>COMING SOON!</h4>
+                    <h5>Don't stop farming! Soon you'll be</h5>
+                    <h5>able to vote to add new projects!</h5>
+                  </div>
+                  <div className="col-lg-3 col-md-12 col-sm-12"></div>
+                </div>
+
+                
+
               </div>
           </div>
 

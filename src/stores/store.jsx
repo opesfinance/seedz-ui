@@ -1,6 +1,5 @@
 import config from "../config";
 import async from 'async';
-import * as moment from 'moment';
 import {
   ERROR,
   CONFIGURE,
@@ -17,32 +16,15 @@ import {
   GET_REWARDS_RETURNED,
   EXIT,
   EXIT_RETURNED,
-  PROPOSE,
-  PROPOSE_RETURNED,
-  GET_PROPOSALS,
-  GET_PROPOSALS_RETURNED,
-  VOTE_FOR,
-  VOTE_FOR_RETURNED,
-  VOTE_AGAINST,
-  VOTE_AGAINST_RETURNED,
   GET_CLAIMABLE_ASSET,
   GET_CLAIMABLE_ASSET_RETURNED,
   CLAIM,
   CLAIM_RETURNED,
   GET_CLAIMABLE,
   GET_CLAIMABLE_RETURNED,
-  GET_YCRV_REQUIREMENTS,
-  GET_YCRV_REQUIREMENTS_RETURNED,
-  GET_GOVERNANCE_REQUIREMENTS,
-  GET_GOVERNANCE_REQUIREMENTS_RETURNED,
-  REGISTER_VOTE,
-  REGISTER_VOTE_RETURNED,
-  GET_VOTE_STATUS,
-  GET_VOTE_STATUS_RETURNED,
   GET_BOOSTEDBALANCES,
   GET_BOOSTEDBALANCES_RETURNED,
-  BOOST_STAKE,
-  BOOST_STAKE_RETURNED
+  BOOST_STAKE
 } from '../constants';
 import Web3 from 'web3';
 
@@ -50,18 +32,10 @@ import {
   injected,
   walletconnect,
   walletlink,
-  ledger,
-  trezor,
-  frame,
-  fortmatic,
-  portis,
-  squarelink,
-  torus,
-  authereum
 } from "./connectors";
 
 const rp = require('request-promise');
-const ethers = require('ethers');
+
 
 const Dispatcher = require('flux').Dispatcher;
 const Emitter = require('events').EventEmitter;
@@ -80,23 +54,12 @@ class Store {
       account: {},
       web3: null,
       valueopen : '',
-      themeType : false,
+      activeClass : false,
+      themeType : localStorage.getItem("themeType"),
       connectorsByName: {
         MetaMask: injected,
         WalletLink: walletlink,
-        WalletConnect: walletconnect,
-         /*  Squarelink: squarelink,
-        Fortmatic: fortmatic
-      Frame: frame,
-        TrustWallet: injected,
-       
-        Ledger: ledger,
-        Trezor: trezor,
-        
-        Portis: portis,
-        
-        Torus: torus,
-        Authereum: authereum */
+        WalletConnect: walletconnect
       },
       web3context: null,
       languages: [
@@ -122,8 +85,8 @@ class Store {
       },
       rewardPools: [
         {
-          id: 'yearn',
-          name: 'Seed Pool',
+          id: 'uniswap',
+          name: 'Uniswap Pool (UNI-V2)',
           website: 'Curve.fi/s',
           link: 'https://www.curve.fi/iearn/deposit',
           linkName : "Buy sCrv",
@@ -144,7 +107,6 @@ class Store {
               rewardsAddress: config.yCurveFiRewardsAddress,
               rewardsABI: config.yCurveFiRewardsABI,
               rewardsSymbol: 'WPE',
-              decimals: 18,
               balance: 0,
               stakedBalance: 0,
               rewardsAvailable: 0,
@@ -160,8 +122,8 @@ class Store {
             }
           ]
         },{
-          id: 'boost',
-          name: 'Harvest Pool',
+          id: 'balancer',
+          name: 'Balancer Pool (BPT)',
           website: 'Uniswap',
           description : 'Used in the 2nd Pool UI',
           link: 'https://app.uniswap.org/#/add/ETH/0xd075e95423c5c4ba1e122cae0f4cdfa19b82881b',
@@ -183,7 +145,6 @@ class Store {
               rewardsAddress: config.boostRewardAddress,
               rewardsABI: config.boostRewardABI,
               rewardsSymbol: 'WPE',
-              decimals: 18,
               balance: 0,
               stakedBalance: 0,
               rewardsAvailable: 0,
@@ -359,9 +320,9 @@ class Store {
           token.balance = data[0]
           token.stakedBalance = data[1]
           token.rewardsAvailable = data[2]
-          if(pool.id =='boost'){
+          if(pool.id ==='boost'){
             pool.liquidityValue = data[3]
-          }else if(pool.id == 'balancer-pool'){
+          }else if(pool.id === 'balancer-pool'){
             pool.liquidityValue = data[4]
           }else{
             pool.liquidityValue = 0
@@ -398,7 +359,7 @@ class Store {
     const web3 = new Web3(store.getStore('web3context').library.provider);
 
     async.map(pools, (pool, callback) => {
-      if(pool.boost == true){
+      if(pool.boost === true){
         async.map(pool.tokens, (token, callbackInner) => {
 
           async.parallel([
@@ -762,9 +723,7 @@ class Store {
   }
 
 
-  getBoosterBalances = (payload) =>{
-    const account = store.getStore('account')
-  }
+
 
   /**
  * -------------------------
@@ -776,22 +735,14 @@ class Store {
     const account = store.getStore('account')
     const { asset, amount, value } = payload.content
 
-    /*this._boostcheckApproval(asset, account, asset.rewardsAddress, (err) => {
-     
-      if(err) {
-        
-        return emitter.emit(ERROR, err);
-      }*/
-
-      this._boostcallStake(asset, account, amount, value, (err, res) => {
-        
+      this._boostcallStake(asset, account, amount, value, (err, res) => {  
         if(err) {
           return emitter.emit(ERROR, err);
         }
 
         return emitter.emit(STAKE_RETURNED, res)
       })
-    //})
+
   };
   _boostcheckApproval = async (asset, account, contract, callback) => {
     try {
@@ -801,11 +752,7 @@ class Store {
       const allowance = await erc20Contract.methods.allowance(account.address, contract).call({ from: account.address })
 
       const ethAllowance = web3.utils.fromWei(allowance, "ether")
-
-      console.log("allowance " + ethAllowance);
-      console.log(parseFloat(ethAllowance))
-      console.log(parseFloat("9999999998"))
-      console.log(parseFloat(ethAllowance) < parseFloat("999999999"));
+  
       if(parseFloat(ethAllowance) < parseFloat("999999999")) {
         await erc20Contract.methods.approve(contract, web3.utils.toWei("9999999999", "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
         callback()
@@ -826,15 +773,13 @@ class Store {
 
     const boostContract = new web3.eth.Contract(asset.rewardsABI, asset.rewardsAddress)
 
-    /////////////
     boostContract.methods.beastMode().send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei'), value: web3.utils.toWei(value, 'ether') })
       .on('transactionHash', function(hash){
         console.log(hash)
         callback(null, hash)
       })
       .on('confirmation', function(confirmationNumber, receipt){
-        console.log(confirmationNumber, receipt);
-        if(confirmationNumber == 2) {
+        if(confirmationNumber === 2) {
           dispatcher.dispatch({ type: GET_BALANCES, content: {} })
         }
       })
@@ -889,7 +834,7 @@ class Store {
     const yCurveFiContract = new web3.eth.Contract(asset.rewardsABI, asset.rewardsAddress)
 
     var amountToSend = web3.utils.toWei(amount, "ether")
-    if (asset.decimals != 18) {
+    if (asset.decimals !== 18) {
       amountToSend = (amount*10**asset.decimals).toFixed(0);
     }
 
@@ -900,7 +845,7 @@ class Store {
       })
       .on('confirmation', function(confirmationNumber, receipt){
         console.log(confirmationNumber, receipt);
-        if(confirmationNumber == 2) {
+        if(confirmationNumber === 2) {
           dispatcher.dispatch({ type: GET_BALANCES, content: {} })
         }
       })
@@ -944,7 +889,7 @@ class Store {
     const yCurveFiContract = new web3.eth.Contract(asset.rewardsABI, asset.rewardsAddress)
 
     var amountToSend = web3.utils.toWei(amount, "ether")
-    if (asset.decimals != 18) {
+    if (asset.decimals !== 18) {
       amountToSend = (amount*10**asset.decimals).toFixed(0);
     }
 
@@ -955,7 +900,7 @@ class Store {
       })
       .on('confirmation', function(confirmationNumber, receipt){
         console.log(confirmationNumber, receipt);
-        if(confirmationNumber == 2) {
+        if(confirmationNumber === 2) {
           dispatcher.dispatch({ type: GET_BALANCES, content: {} })
         }
       })
@@ -1005,7 +950,7 @@ class Store {
       })
       .on('confirmation', function(confirmationNumber, receipt){
         console.log(confirmationNumber, receipt);
-        if(confirmationNumber == 2) {
+        if(confirmationNumber === 2) {
           dispatcher.dispatch({ type: GET_BALANCES, content: {} })
         }
       })
@@ -1055,7 +1000,7 @@ class Store {
       })
       .on('confirmation', function(confirmationNumber, receipt){
         console.log(confirmationNumber, receipt);
-        if(confirmationNumber == 2) {
+        if(confirmationNumber === 2) {
           dispatcher.dispatch({ type: GET_BALANCES, content: {} })
         }
       })
@@ -1156,7 +1101,7 @@ class Store {
     const claimContract = new web3.eth.Contract(config.claimABI, config.claimAddress)
 
     var amountToSend = web3.utils.toWei(amount, "ether")
-    if (asset.decimals != 18) {
+    if (asset.decimals !== 18) {
       amountToSend = (amount*10**asset.decimals).toFixed(0);
     }
 
@@ -1167,7 +1112,7 @@ class Store {
       })
       .on('confirmation', function(confirmationNumber, receipt){
         console.log(confirmationNumber, receipt);
-        if(confirmationNumber == 2) {
+        if(confirmationNumber === 2) {
           dispatcher.dispatch({ type: GET_CLAIMABLE_ASSET, content: {} })
         }
       })

@@ -4,22 +4,18 @@ import { withNamespaces } from 'react-i18next';
 import UnlockModal from '../unlock/unlockModal.jsx'
 
 
-import { Container, Col, Row, Button, Navbar, Nav, Card, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { FaRegListAlt, FaArrowLeft,FaListUl } from "react-icons/fa";
+import {  Col, Row, Button, Navbar } from 'react-bootstrap';
+import {  FaArrowLeft,FaListUl } from "react-icons/fa";
 
 
 import {
-  ERROR,
-  CONFIGURE_RETURNED,
-  GET_BALANCES, 
-  GET_BALANCES_RETURNED
+  CONFIGURE_RETURNED
 } from '../../constants'
 
 import LeftNav from "../leftnav/leftnav";
 
 import Store from "../../stores";
 const emitter = Store.emitter
-const dispatcher = Store.dispatcher
 const store = Store.store
 
 
@@ -68,7 +64,6 @@ class Home extends Component {
   
 
   render() {
-    const { classes, t, location } = this.props;
     const themeType = store.getStore('themeType')
     console.log("THEME HOME : ", themeType)
     const { activeClass, account, modalOpen } = this.state;
@@ -104,7 +99,7 @@ class Home extends Component {
               <div className="onoffswitch1 text-center">
                 <input type="checkbox" name="onoffswitch1" className="onoffswitch1-checkbox" id="myonoffswitch1"
                 onClick={this.toggleTheme}  
-                checked={themeType}/>
+                defaultChecked={themeType}/>
                 <label className="onoffswitch1-label" htmlFor="myonoffswitch1">
                     <span className="onoffswitch1-inner"></span>
                     <span className="onoffswitch1-switch"></span>
