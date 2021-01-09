@@ -59,8 +59,6 @@ class WhaleTank extends Component {
   
 
   render() {
-    this.state.themeType = store.getStore('themeType')
-    this.state.activeClass = store.getStore('activeClass')
     const {  account, modalOpen } = this.state;
     var address = null;
     if (account.address) {

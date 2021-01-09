@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import UnlockModal from '../unlock/unlockModal.jsx'
 
@@ -23,14 +23,20 @@ class Farm extends Component {
     super()
 
     const account = store.getStore('account')
+    const rewardPools = store.getStore('rewardPools')
     const themeType = store.getStore('themeType')
     const activeClass = store.getStore('activeClass')
 
+
     this.state = {
       activeClass: activeClass,
+      rewardPools: rewardPools,
+      loading: !(account && rewardPools),
       account: account,
       themeType : themeType
     };
+
+
   };
 
   componentWillMount() {
@@ -58,8 +64,6 @@ class Farm extends Component {
   
 
   render() {
-    this.state.themeType = store.getStore('themeType')
-    this.state.activeClass = store.getStore('activeClass')
     const { account, modalOpen } = this.state;
 
     var address = null;
@@ -92,7 +96,7 @@ class Farm extends Component {
 
                 
                 <Navbar.Collapse className="justify-content-end">
-                  <Button className="btn btn-primary" onClick={this.overlayClicked }>
+                  <Button className="btn btn-primary " onClick={this.overlayClicked }>
                    { address && 'Wallet : ' + address}
                    { !address && 'Connect Wallet'}
                   </Button>
@@ -106,14 +110,43 @@ class Farm extends Component {
               
                 <div className="row">
 
-                  
-                <div className="col-lg-4 col-md-12 col-sm-12 p-5 my-auto">
+                  { this.renderFarmItem('balancer') }
+              
+
+                </div>
+              
+              </div>
+          </div>
+
+        </div>
+
+
+
+        
+        { modalOpen && this.renderModal() }
+      </>
+    )
+  };
+
+
+  renderFarmItem=(rewardName)=>{
+    const { rewardPools } = this.state
+    return rewardPools.filter((rewardPool) => {
+      if([ rewardName] .includes(rewardPool.id) ) {
+        return true
+      }
+    }).map((rewardPool) => {
+      return (
+        <>
+          <div className="col-lg-4 col-md-12 col-sm-12 p-5 my-auto">
                     <div className="card newBorder">
                       <table >
                           <tbody> 
                             <tr className="newtable">
                               <th>Balacer Pool<br/>(BPT)</th>
-                              <td><button className="btn btn-primary">Stake</button></td>
+                              <td><button className="btn btn-primary btn-block h-100 w-100"
+                                onClick={ () => { this.navigateStakePage(rewardPool) }}
+                              >Stake</button></td>
                             </tr>
                             <tr>
                               <th>APY</th>
@@ -137,37 +170,27 @@ class Farm extends Component {
                             </tr>
                             <tr>
                               <td colSpan="2" className="text-center">
-                                  <FaTwitter/> &nbsp;
-                                  <FaGithubAlt /> &nbsp;
-                                  <FaFacebook /> &nbsp;
-                                  <FaLink/>
+                                  <Link to="/"><FaTwitter/></Link> &nbsp;
+                                  <Link to="/"><FaGithubAlt /></Link> &nbsp;
+                                  <Link to="/"><FaFacebook /></Link> &nbsp;
+                                  <Link to="/"><FaLink/></Link>
                               </td>
                             </tr>
                           </tbody>
                       </table>
                     </div>
                   </div>
-
-
-
-
-                </div>
-              
-              </div>
-          </div>
-
-        </div>
-
-
-
-        
-        { modalOpen && this.renderModal() }
-      </>
-    )
-  };
+        </>
+        )
+      })
+  }
 
  
 
+  navigateStakePage = (rewardPool) =>{
+    store.setStore({ currentPool: rewardPool })
+    this.props.history.push('/stake')
+  }
 
   renderModal = () => {
     return (

@@ -86,8 +86,7 @@ class Hives extends Component {
 
   render() {
     const { account, modalOpen } = this.state;
-    this.state.themeType = store.getStore('themeType')
-    this.state.activeClass = store.getStore('activeClass')
+
     var address = null;
     if (account.address) {
       address = account.address.substring(0,6)+'...'+account.address.substring(account.address.length-4,account.address.length)
