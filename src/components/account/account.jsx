@@ -97,7 +97,7 @@ class Account extends Component {
 
 
 
-          <div  className={!this.state.themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
+          <div  className={this.state.themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
 
             <Navbar className="mt-3">
               <Button className="btn btn-primary" data-toggle="collapse" aria-expanded="false"

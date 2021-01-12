@@ -36,6 +36,8 @@ const dispatcher = Store.dispatcher
 const store = Store.store
 
 class App extends Component {
+
+  
   state = {
     account: null,
     headerValue: null,
@@ -102,27 +104,25 @@ class App extends Component {
     return (
      <>
         <IpfsRouter>        
-              <Switch>
-              <Route path="/stake">
-                  <Stake/>
-               </Route>
-                <Route path="/whaletank">
-                  <WhaleTank/>
-               </Route>
-                <Route path="/hives">
-                  <Hives/>
-               </Route>
-                <Route path="/farm">
-                  <Farm/>
-               </Route>
-                <Route path="/">
-                { !account && <Account /> }
-                  { account && <Home /> }
+        { !account && <Account /> }
+         { account && <Switch>
+                <Route path="/stake">
+                    <Stake/>
                 </Route>
-                
+                  <Route path="/whaletank">
+                    <WhaleTank/>
+                </Route>
+                  <Route path="/hives">
+                    <Hives/>
+                </Route>
+                  <Route path="/farm">
+                    <Farm/>
+                </Route>
+                  <Route path="/">
+                 <Home /> 
+                  </Route>
               </Switch>
-            
-          
+  }
         </IpfsRouter>
       </>
     );

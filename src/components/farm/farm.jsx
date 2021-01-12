@@ -84,7 +84,7 @@ class Farm extends Component {
             />
 
 
-            <div  className={!this.state.themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
+            <div  className={this.state.themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
 
               <Navbar className="mt-3">
               <Navbar.Toggle />
@@ -138,8 +138,8 @@ class Farm extends Component {
       return false
     }).map((rewardPool) => {
       return (
-        <>
-          <div className="col-lg-4 col-md-12 col-sm-12 p-5 my-auto">
+    
+          <div key={rewardPool.id} className="col-lg-4 col-md-12 col-sm-12 p-5 my-auto">
                     <div className="card newBorder">
                       <table >
                           <tbody> 
@@ -181,7 +181,6 @@ class Farm extends Component {
                       </table>
                     </div>
                   </div>
-        </>
         )
       })
   }

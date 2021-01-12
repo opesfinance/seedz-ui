@@ -10,13 +10,14 @@ import { FaListUl } from "react-icons/fa";
 
 import {
   CONFIGURE_RETURNED,
+  GET_BALANCES, 
   GET_BALANCES_RETURNED,
-  GET_BOOSTEDBALANCES_RETURNED
+  GET_BOOSTEDBALANCES_RETURNED,
 } from '../../constants/constants'
 import LeftNav from "../leftnav/leftnav";
 import Store from "../../stores/store";
 const emitter = Store.emitter
-
+const dispatcher = Store.dispatcher
 const store = Store.store
 
 
@@ -30,6 +31,7 @@ class Hives extends Component {
     const themeType = store.getStore('themeType')
     const activeClass = store.getStore('activeClass')
 
+    console.log(account)
 
     this.state = {
       activeClass: activeClass,
@@ -39,7 +41,7 @@ class Hives extends Component {
       themeType : themeType
     };
 
-
+    dispatcher.dispatch({ type: GET_BALANCES, content: {} })
 
   };
 
@@ -102,7 +104,7 @@ class Hives extends Component {
             />
 
 
-            <div  className={!this.state.themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
+            <div  className={this.state.themeType?"nightmode-content":"daymode-content"} id="page-content-wrapper">
 
               <Navbar className="mt-3">
               <Navbar.Toggle />
@@ -162,15 +164,15 @@ class Hives extends Component {
       return (
         <>
 
-            <div className="col-lg-4 col-md-12 col-sm-12 p-5 my-auto">
+            <div key={rewardPool.id} className="col-lg-4 col-md-12 col-sm-12 p-2 my-auto">
                     <div className="card newBorder">
-                      <table >
+                      <table className="newtable w-100" >
                           <tbody> 
-                            <tr className="newtable">
+                            <tr >
                               <th>{ rewardPool.name }<br/>(BPT)</th>
-                              <td><button className="btn btn-primary">Stake</button></td>
+                              <td><button className="btn btn-primary btn-block">Stake</button></td>
                             </tr>
-                            <tr>
+                            <tr >
                               <th>BONUS</th>
                               <td>20039</td>
                             </tr>
@@ -180,11 +182,11 @@ class Hives extends Component {
                             </tr>
                             <tr>
                               <th>WEEKLY REWARDS</th>
-                              <td>20039 seedz</td>
+                              <td>{ rewardPool.tokens[0].poolRatePerWeek } {rewardPool.tokens[0].poolRateSymbol}</td>
                             </tr>
                             <tr>
                               <th>POOL LIQUIDITY</th>
-                              <td>$20039 USD</td>
+                              <td>${ Number(parseFloat(rewardPool.liquidityValue).toFixed(2)).toLocaleString() } USD</td>
                             </tr>
                             <tr>
                               <th>MY BEAST MODES</th>

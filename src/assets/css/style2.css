@@ -331,6 +331,10 @@ NIGHT MODE
 .nightmode-content input{
    color:#e0e0e0 !important;
 }
+.daymode-content .table tr td{
+   color:#e0e0e0 !important;
+}
+
 
 .nightmode-content .card{
    border:1px solid #4d6389;
@@ -378,6 +382,10 @@ DAY MODE
 .daymode-content .card-title,
 .daymode-content input{
    color:#3874de !important;
+}
+
+.daymode-content .newtable  td{
+   color:#222629 !important;
 }
 
 .daymode-content .card{

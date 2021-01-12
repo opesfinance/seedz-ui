@@ -40,7 +40,7 @@ class LeftNav extends React.Component{
 
         return (
             <>
-                 <div className={!this.state.themeType?"nigthmode-sidebar":"daymode-sidebar"} id="sidebar-wrapper">
+                 <div className={this.state.themeType?"nigthmode-sidebar":"daymode-sidebar"} id="sidebar-wrapper">
 
                     <div className="sidebar-heading text-center ">
                         <img
@@ -52,7 +52,7 @@ class LeftNav extends React.Component{
                             />{' '}
                     </div>
                     
-                    <div className={!this.state.themeType?"nigthmode-sidebar-text list-group list-group-flush":"daymode-sidebar-text list-group list-group-flush"}  >
+                    <div className={this.state.themeType?"nigthmode-sidebar-text list-group list-group-flush":"daymode-sidebar-text list-group list-group-flush"}  >
                         <Link className="list-group-item list-group-item-action" to="/#" ><FaRegListAlt/> Dashboard</Link>
                         <Link className="list-group-item list-group-item-action" to="/hives"><FaRegListAlt/> Hives</Link>
                         <Link className="list-group-item list-group-item-action" to="/farm"><FaRegListAlt/> Farms</Link>
@@ -60,7 +60,7 @@ class LeftNav extends React.Component{
                     </div>
 
 
-                    <div className={!this.state.themeType?"nigthmode-sidebar-text nav-footer d-flex align-items-end":"daymode-sidebar-text nav-footer d-flex align-items-end"} >
+                    <div className={this.state.themeType?"nigthmode-sidebar-text nav-footer d-flex align-items-end":"daymode-sidebar-text nav-footer d-flex align-items-end"} >
                         <Button className="btn-block btnClear" 
                             onClick={this.toggleClassClick.bind(this)}>
                             <FaArrowLeft/> Hide Menu
@@ -72,7 +72,7 @@ class LeftNav extends React.Component{
                     <div className="onoffswitch1 text-center">
                         <input type="checkbox" name="onoffswitch1" className="onoffswitch1-checkbox" id="myonoffswitch1"
                             onClick={this.toggleThemeClick.bind(this)} 
-                            defaultChecked={this.state.themeType}/>
+                            defaultChecked={!this.state.themeType}/>
                         <label className="onoffswitch1-label" htmlFor="myonoffswitch1">
                             <span className="onoffswitch1-inner"></span>
                             <span className="onoffswitch1-switch"></span>

@@ -45,7 +45,12 @@ const emitter = new Emitter();
 
 class Store {
   constructor() {
-
+    let themeType = localStorage.getItem("themeType")
+    console.log("FIRST STORE ", themeType)
+    if(themeType === undefined || themeType === null){
+      themeType = true
+      localStorage.setItem("themeType", true);
+    }
     this.store = {
       votingStatus: false,
       governanceContractVersion: 2,
@@ -55,7 +60,7 @@ class Store {
       web3: null,
       valueopen : '',
       activeClass : false,
-      themeType : localStorage.getItem("themeType"),
+      themeType : themeType,
       connectorsByName: {
         MetaMask: injected,
         WalletLink: walletlink,
@@ -320,9 +325,9 @@ class Store {
           token.balance = data[0]
           token.stakedBalance = data[1]
           token.rewardsAvailable = data[2]
-          if(pool.id ==='boost'){
+          if(pool.id ==='uniswap'){
             pool.liquidityValue = data[3]
-          }else if(pool.id === 'balancer-pool'){
+          }else if(pool.id === 'balancer'){
             pool.liquidityValue = data[4]
           }else{
             pool.liquidityValue = 0
